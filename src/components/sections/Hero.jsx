@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 // ─────────────────────────────────────────────────────────────────────────────
 // CONFIG
 // ─────────────────────────────────────────────────────────────────────────────
-const WHATSAPP_NUMBER = "254700000000";
+const WHATSAPP_NUMBER = "254704060364";
 const WA_MESSAGE = encodeURIComponent(
   "I'm interested in knowing about your VA services"
 );
@@ -338,7 +338,7 @@ const Hero = () => {
                 flexWrap: "wrap",
               }}
             >
-              {[["5+", "Years Exp."], ["98%", "Satisfaction"], ["150+", "Projects"], ["⚡2h", "Response"]].map(([n, l]) => (
+              {[["3+", "Years Exp."], ["98%", "Satisfaction"], ["15+", "Projects"], ["⚡2h", "Response"]].map(([n, l]) => (
                 <div key={l} style={{ textAlign: "center" }}>
                   <div
                     className="font-display"

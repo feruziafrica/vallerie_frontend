@@ -4,10 +4,10 @@ import ABOUT_IMG from "../../assets/about_img.jpg";
 import { useState, useEffect } from "react";
 
 const SKILLS = [
-  ["Admin Expert", "5+ yr", "Inbox, calendar, docs"],
+  ["Admin Expert", "3+ yr", "Inbox, calendar, docs"],
   ["Social Media",  "3+ yr", "Strategy & content"],
-  ["CRM & Tools",   "4+ yr", "HubSpot, Zapier, etc."],
-  ["Project Mgmt",  "4+ yr", "Agile, Waterfall"],
+  ["CRM & Tools",   "2+ yr", "HubSpot, Zapier, etc."],
+  ["Project Mgmt",  "3+ yr", "Agile, Waterfall"],
 ];
 
 const CERTIFICATIONS = ["Google Workspace", "HubSpot CRM", "Asana PM"];
@@ -174,7 +174,7 @@ const About = () => {
           </h2>
 
           <p style={{ fontSize: 16, lineHeight: 1.8, color: "var(--stone-600)", marginBottom: 20, fontWeight: 300 }}>
-            With over 5 years of experience supporting executives, entrepreneurs, and fast-growing businesses, I bring structure, strategy, and a calm hand to the chaos of running a modern company.
+            With over 4 years of experience supporting executives, entrepreneurs, and fast-growing businesses, I bring structure, strategy, and a calm hand to the chaos of running a modern company.
           </p>
           <p style={{ fontSize: 16, lineHeight: 1.8, color: "var(--stone-600)", marginBottom: 36, fontWeight: 300 }}>
             Based in Nairobi, I work with clients across Africa, Europe, and North America. My approach combines deep technical proficiency with genuine care for your success.
