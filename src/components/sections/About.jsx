@@ -47,7 +47,7 @@ const AboutPhoto = ({ inView }) => (
       >
         <img
           src={ABOUT_IMG}
-          alt="Amara Osei"
+          alt="Vallerie VA"
           style={{
             width: "100%",
             height: "100%",
@@ -167,7 +167,7 @@ const About = () => {
             }}
           >
             Hi, I'm{" "}
-            <em style={{ color: "var(--amber-600)", fontStyle: "italic" }}>Amara</em>{" "}
+            <em style={{ color: "var(--amber-600)", fontStyle: "italic" }}>Vallerie</em>{" "}
             —<br />
             Your Strategic<br />
             Business Partner

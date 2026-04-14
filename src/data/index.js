@@ -195,7 +195,7 @@ export const TESTIMONIALS = [
     name: "Sarah Mitchell",
     role: "CEO, Luminary Brands",
     avatar: "SM",
-    text: "Working with Amara has been transformational. She manages my entire executive schedule, inbox, and social channels — I've reclaimed 15+ hours every week. Worth every cent.",
+    text: "Working with Vallerie has been transformational. She manages my entire executive schedule, inbox, and social channels — I've reclaimed 15+ hours every week. Worth every cent.",
     rating: 5,
   },
   {
@@ -216,7 +216,7 @@ export const TESTIMONIALS = [
     name: "James Whitfield",
     role: "Partner, Apex Law Group",
     avatar: "JW",
-    text: "Discreet, efficient, and incredibly talented. Managing our legal team's schedules across time zones is no small feat. Amara makes it look effortless.",
+    text: "Discreet, efficient, and incredibly talented. Managing our legal team's schedules across time zones is no small feat. Vallerie makes it look effortless.",
     rating: 5,
   },
 ];

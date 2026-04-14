@@ -39,7 +39,7 @@ const Logo = ({ menuOpen }) => (
         letterSpacing: "0.01em",
         transition: "color 0.3s",
       }}>
-        Amara<span style={{ color: menuOpen ? "var(--amber-300)" : "var(--amber-500)" }}>VA</span>
+        Vallerie<span style={{ color: menuOpen ? "var(--amber-300)" : "var(--amber-500)" }}>VA</span>
       </span>
     </div>
   </a>
