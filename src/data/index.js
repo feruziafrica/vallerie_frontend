@@ -157,7 +157,7 @@ export const PLANS = [
   },
   {
     name: "Growth",
-    price: "k=Ksh $750",
+    price: "$750",
     period: "/mo",
     desc: "For scaling businesses that need comprehensive support.",
     features: [
