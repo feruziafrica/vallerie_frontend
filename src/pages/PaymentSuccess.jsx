@@ -63,7 +63,7 @@ const PaymentSuccess = () => {
               {message || "We couldn't confirm your payment. Please contact us directly."}
             </p>
             <p style={{ fontSize: 14, color: "var(--stone-400)", marginBottom: 36 }}>
-              Email: <a href="mailto:hello@amarava.co" style={{ color: "var(--amber-600)" }}>hello@amarava.co</a>
+              Email: <a href="mailto:hello@Vallerieva.co" style={{ color: "var(--amber-600)" }}>hello@Vallerieva.co</a>
             </p>
             <Link to="/" className="btn-outline" style={{ textDecoration: "none" }}>
               Return Home

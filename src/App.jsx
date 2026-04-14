@@ -33,7 +33,7 @@ const LoadingScreen = () => (
       transition={{ duration: 1.2, repeat: Infinity }}
     >
       <span className="font-display" style={{ fontSize: 52, fontWeight: 700, color: "var(--amber-300)" }}>
-        AmaraVA
+        VallerieVA
       </span>
     </motion.div>
   </motion.div>
