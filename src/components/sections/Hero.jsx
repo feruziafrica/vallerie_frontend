@@ -255,7 +255,7 @@ const Hero = () => {
                 }}
               />
               <span style={{ fontSize: 13, color: "#6B5D52", fontWeight: 400 }}>
-                From 80+ verified clients
+                From 40+ verified clients
               </span>
             </motion.div>
 
@@ -338,7 +338,7 @@ const Hero = () => {
                 flexWrap: "wrap",
               }}
             >
-              {[["3+", "Years Exp."], ["98%", "Satisfaction"], ["15+", "Projects"], ["⚡2h", "Response"]].map(([n, l]) => (
+              {[["4+", "Years Exp."], ["98%", "Satisfaction"], ["30 +", "Projects"], ["⚡2h", "Response"]].map(([n, l]) => (
                 <div key={l} style={{ textAlign: "center" }}>
                   <div
                     className="font-display"

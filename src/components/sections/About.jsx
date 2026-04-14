@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 const SKILLS = [
   ["Admin Expert", "3+ yr", "Inbox, calendar, docs"],
   ["Social Media",  "3+ yr", "Strategy & content"],
-  ["CRM & Tools",   "2+ yr", "HubSpot, Zapier, etc."],
+  ["CRM & Tools",   "3+ yr", "HubSpot, Zapier, etc."],
   ["Project Mgmt",  "3+ yr", "Agile, Waterfall"],
 ];
 
@@ -83,7 +83,7 @@ const AboutPhoto = ({ inView }) => (
           zIndex: 10,
         }}
       >
-        <div className="font-display" style={{ fontSize: 28, fontWeight: 700, color: "var(--amber-800)", lineHeight: 1 }}>5+</div>
+        <div className="font-display" style={{ fontSize: 28, fontWeight: 700, color: "var(--amber-800)", lineHeight: 1 }}>4+</div>
         <div style={{ fontSize: 10, color: "var(--amber-700)", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 4 }}>Years</div>
       </motion.div>
 
