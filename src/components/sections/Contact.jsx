@@ -7,7 +7,7 @@ import { Spinner } from "@/components/ui";
 
 const CONTACT_INFO = [
   { icon: "📧", label: "Email",         value: "hello@Vallerieva.co"  },
-  { icon: "📱", label: "WhatsApp",      value: "+254 700 000 000"  },
+  { icon: "📱", label: "WhatsApp",      value: "+254 704 060 364"  },
   { icon: "🕐", label: "Response Time", value: "Within 4 hours"   },
 ];
 

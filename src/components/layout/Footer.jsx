@@ -97,7 +97,7 @@ const Footer = () => {
         </div>
 
         <div style={{ borderTop: "1px solid var(--stone-800)", paddingTop: 28, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-          <p style={{ fontSize: 13, color: "var(--stone-600)", margin: 0 }}>© 2026 Vallerie VA. All rights reserved.</p>
+          <p style={{ fontSize: 13, color: "var(--stone-600)", margin: 0 }}>© 2026 SkillScript Academy. All rights reserved.</p>
           <p style={{ fontSize: 13, color: "var(--stone-600)", margin: 0 }}>Payments secured by M-Pesa & PayPal · SSL Encrypted</p>
         </div>
       </div>
