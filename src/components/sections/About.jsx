@@ -4,9 +4,9 @@ import ABOUT_IMG from "../../assets/about_img.jpg";
 import { useState, useEffect } from "react";
 
 const SKILLS = [
-  ["Admin Expert", "3+ yr", "Inbox, calendar, docs"],
-  ["Social Media",  "3+ yr", "Strategy & content"],
-  ["CRM & Tools",   "3+ yr", "HubSpot, Zapier, etc."],
+  ["Admin Expert", "4+ yr", "Inbox, calendar, docs"],
+  ["Social Media",  "4+ yr", "Strategy & content"],
+  ["CRM & Tools",   "4+ yr", "HubSpot, Zapier, etc."],
   ["Project Mgmt",  "3+ yr", "Agile, Waterfall"],
 ];
 
