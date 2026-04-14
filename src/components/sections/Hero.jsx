@@ -177,7 +177,7 @@ const Hero = () => {
                 color: "#B4530E",
               }}
             >
-              Premium Virtual Assistant Services
+              Vallerie Virtual Assistant Services
             </motion.div>
 
             {/* Main Headline — 2-3 Lines for Wider Display */}
