@@ -142,7 +142,7 @@ export const PROJECTS = [
 export const PLANS = [
   {
     name: "Starter",
-    price: "Ksh 2,500",
+    price: "$550",
     period: "/mo",
     desc: "Perfect for solopreneurs and early-stage businesses.",
     features: [
@@ -157,7 +157,7 @@ export const PLANS = [
   },
   {
     name: "Growth",
-    price: "k=Ksh 3,500",
+    price: "k=Ksh $750",
     period: "/mo",
     desc: "For scaling businesses that need comprehensive support.",
     features: [
