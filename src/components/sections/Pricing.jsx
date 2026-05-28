@@ -1,268 +1,148 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { PLANS } from "@/data";
-import { useReveal, useApi } from "@/hooks";
-import { initiateMpesa, createPayPalOrder } from "@/services/api";
-import { Spinner } from "@/components/ui";
+import { useReveal } from "@/hooks";
 import SectionHeader from "@/components/ui/SectionHeader";
 
 const TRUST_BADGES = [
-  "🔒 Secure Payments",
   "✅ No Hidden Fees",
-  "↩️ 14-Day Guarantee",
-  "🌍 Pay via M-Pesa or PayPal",
+  "📅 Free Discovery Call",
+  "🌍 Remote-Ready VAs",
+  "⚡ 2-Hour Response Time",
 ];
 
-// ── PAYMENT SUB-FORM ──────────────────────────────────────────────────────────
-const PaymentSection = ({ planName, featured }) => {
-  const [method, setMethod] = useState(null);
-  const [phone, setPhone] = useState("");
-
-  const mpesa = useApi(initiateMpesa);
-  const paypal = useApi(createPayPalOrder);
-  const planSlug = planName.toLowerCase();
-
-  const handleMpesa = async () => {
-    try { await mpesa.execute({ phone_number: phone, plan: planSlug }); } catch {}
-  };
-
-  const handlePayPal = async () => {
-    try {
-      const res = await paypal.execute({ plan: planSlug });
-      if (res?.approval_url) window.location.href = res.approval_url;
-    } catch {}
-  };
-
-  const btnStyle = (active) => ({
-    flex: 1,
-    padding: "10px 0",
-    borderRadius: 8,
-    fontSize: 13,
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "all 0.2s",
-    ...(active
-      ? {
-          background: "var(--amber-500)",
-          border: "1px solid var(--amber-500)",
-          color: "white",
-        }
-      : featured
-      ? {
-          background: "rgba(255,255,255,0.1)",
-          border: "1px solid rgba(255,255,255,0.25)",
-          color: "var(--amber-100)",
-        }
-      : {
-          background: "white",
-          border: "1px solid var(--amber-300)",
-          color: "var(--amber-800)",
-        }),
-  });
-
-  const wrapStyle = {
-    marginTop: 20,
-    padding: "16px",
-    borderRadius: 12,
-    overflow: "hidden",
-    ...(featured
-      ? { background: "rgba(0,0,0,0.15)", border: "1px solid rgba(255,255,255,0.1)" }
-      : { background: "var(--amber-50)", border: "1px solid var(--amber-200)" }),
-  };
-
-  const labelColor = featured ? "var(--amber-200)" : "var(--amber-900)";
-  const successColor = featured ? "var(--amber-300)" : "var(--amber-700)";
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      style={wrapStyle}
-    >
-      <p style={{ fontSize: 13, color: labelColor, marginBottom: 14, fontWeight: 500 }}>
-        Choose payment method for <strong>{planName}</strong>:
-      </p>
-
-      <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
-        <button onClick={() => setMethod("mpesa")} style={btnStyle(method === "mpesa")}>📱 M-Pesa</button>
-        <button onClick={() => setMethod("paypal")} style={btnStyle(method === "paypal")}>💳 PayPal</button>
-      </div>
-
-      {method === "mpesa" && (
-        <div>
-          <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="2547XXXXXXXX"
-              style={{
-                flex: 1, minWidth: 0,
-                padding: "10px 14px", borderRadius: 8, fontSize: 13, outline: "none",
-                ...(featured
-                  ? { background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "var(--amber-50)" }
-                  : { background: "white", border: "1px solid var(--amber-300)", color: "var(--amber-900)" }),
-              }}
-            />
-            <button
-              onClick={handleMpesa}
-              disabled={mpesa.loading || !phone}
-              className="btn-primary"
-              style={{
-                padding: "10px 18px", fontSize: 13,
-                background: "var(--amber-500)", color: "white",
-                opacity: mpesa.loading || !phone ? 0.6 : 1,
-                flexShrink: 0,
-              }}
-            >
-              {mpesa.loading ? <Spinner size={14} color="white" /> : "Pay"}
-            </button>
-          </div>
-          {mpesa.error && <p style={{ fontSize: 12, color: "#ef4444" }}>⚠️ {mpesa.error}</p>}
-          {mpesa.data  && <p style={{ fontSize: 12, color: successColor }}>✅ {mpesa.data.message}</p>}
-        </div>
-      )}
-
-      {method === "paypal" && (
-        <div>
-          <button
-            onClick={handlePayPal}
-            disabled={paypal.loading}
-            className="btn-primary"
-            style={{
-              width: "100%", justifyContent: "center",
-              background: "#003087", color: "white",
-              fontSize: 13, opacity: paypal.loading ? 0.7 : 1,
-            }}
-          >
-            {paypal.loading
-              ? <span style={{ display: "flex", alignItems: "center", gap: 8 }}><Spinner size={14} />Redirecting…</span>
-              : "Continue with PayPal →"}
-          </button>
-          {paypal.error && <p style={{ fontSize: 12, color: "#ef4444", marginTop: 8 }}>⚠️ {paypal.error}</p>}
-        </div>
-      )}
-    </motion.div>
+// Build a Google Calendar "new event" URL pre-filled with plan details
+const buildCalendarLink = (plan) => {
+  const title = encodeURIComponent(`Discovery Call — ${plan.name} Plan`);
+  const details = encodeURIComponent(
+    `Hi! I'm interested in the ${plan.name} plan (${plan.price}${plan.period ? " " + plan.period : ""}).\n\nFeatures I'm looking for:\n${plan.features.map((f) => `• ${f}`).join("\n")}`
   );
+  return `https://calendar.google.com/calendar/r/eventedit?text=${title}&details=${details}`;
 };
 
 // ── PLAN CARD ─────────────────────────────────────────────────────────────────
-const PlanCard = ({ plan, index, inView, openPay, setOpenPay }) => {
-  const isOpen = openPay === plan.name;
+const PlanCard = ({ plan, index, inView }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 40 }}
+    animate={inView ? { opacity: 1, y: 0 } : {}}
+    transition={{ delay: 0.15 + index * 0.1 }}
+    className="plan-card"
+    data-featured={plan.featured ? "true" : undefined}
+    style={{
+      borderRadius: 24,
+      position: "relative",
+      overflow: "hidden",
+      background: plan.featured ? "var(--amber-800)" : "var(--cream)",
+      border: plan.featured ? "none" : "1px solid var(--amber-200)",
+      boxShadow: plan.featured ? "0 40px 80px rgba(120,53,15,0.3)" : "none",
+    }}
+  >
+    {plan.featured && (
+      <div style={{
+        position: "absolute", top: 20, right: 20,
+        background: "var(--amber-400)", color: "var(--amber-900)",
+        fontSize: 11, fontWeight: 700, letterSpacing: "0.1em",
+        padding: "4px 12px", borderRadius: 20, textTransform: "uppercase",
+      }}>
+        Best Value
+      </div>
+    )}
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ delay: 0.15 + index * 0.1 }}
-      className="plan-card"
-      data-featured={plan.featured ? "true" : undefined}
+    {/* Plan name + price */}
+    <div style={{ marginBottom: 24 }}>
+      <h3 style={{
+        fontSize: 18, fontWeight: 600, marginBottom: 8,
+        color: plan.featured ? "var(--amber-100)" : "var(--amber-900)",
+      }}>
+        {plan.name}
+      </h3>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 12 }}>
+        <span
+          className="font-display plan-card__price"
+          style={{
+            fontWeight: 700, lineHeight: 1,
+            color: plan.featured ? "var(--amber-300)" : "var(--amber-700)",
+          }}
+        >
+          {plan.price}
+        </span>
+        <span style={{ fontSize: 15, color: plan.featured ? "var(--amber-400)" : "var(--stone-400)" }}>
+          {plan.period}
+        </span>
+      </div>
+      <p style={{
+        fontSize: 14, lineHeight: 1.6,
+        color: plan.featured ? "var(--amber-300)" : "var(--stone-500)",
+      }}>
+        {plan.desc}
+      </p>
+    </div>
+
+    {/* Feature list */}
+    <div style={{ marginBottom: 32 }}>
+      {plan.features.map((f) => (
+        <div key={f} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+          <span style={{
+            width: 20, height: 20, borderRadius: "50%", flexShrink: 0,
+            background: plan.featured ? "var(--amber-400)" : "var(--amber-100)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 11,
+            color: plan.featured ? "var(--amber-900)" : "var(--amber-700)",
+          }}>✓</span>
+          <span style={{ fontSize: 14, color: plan.featured ? "var(--amber-200)" : "var(--stone-600)" }}>
+            {f}
+          </span>
+        </div>
+      ))}
+    </div>
+
+    {/* Book a Call CTA */}
+    <a
+      href={buildCalendarLink(plan)}
+      target="_blank"
+      rel="noopener noreferrer"
       style={{
-        borderRadius: 24,
-        position: "relative",
-        overflow: "hidden",
-        background: plan.featured ? "var(--amber-800)" : "var(--cream)",
-        border: plan.featured ? "none" : "1px solid var(--amber-200)",
-        boxShadow: plan.featured ? "0 40px 80px rgba(120,53,15,0.3)" : "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        width: "100%",
+        padding: "12px 20px",
+        borderRadius: 10,
+        fontSize: 14,
+        fontWeight: 700,
+        textDecoration: "none",
+        boxSizing: "border-box",
+        cursor: "pointer",
+        transition: "opacity 0.2s",
+        background: plan.featured ? "var(--amber-400)" : "var(--amber-600)",
+        color: plan.featured ? "var(--amber-900)" : "white",
       }}
+      onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.88"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
     >
-      {plan.featured && (
-        <div style={{
-          position: "absolute", top: 20, right: 20,
-          background: "var(--amber-400)", color: "var(--amber-900)",
-          fontSize: 11, fontWeight: 700, letterSpacing: "0.1em",
-          padding: "4px 12px", borderRadius: 20, textTransform: "uppercase",
-        }}>
-          Best Value
-        </div>
-      )}
+      {/* Calendar icon */}
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8"  y1="2" x2="8"  y2="6" />
+        <line x1="3"  y1="10" x2="21" y2="10" />
+      </svg>
+      Book a Call — {plan.name}
+    </a>
 
-      {/* Price header */}
-      <div style={{ marginBottom: 24 }}>
-        <h3 style={{
-          fontSize: 18, fontWeight: 600, marginBottom: 8,
-          color: plan.featured ? "var(--amber-100)" : "var(--amber-900)",
-        }}>
-          {plan.name}
-        </h3>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 12 }}>
-          <span
-            className="font-display plan-card__price"
-            style={{
-              fontWeight: 700, lineHeight: 1,
-              color: plan.featured ? "var(--amber-300)" : "var(--amber-700)",
-            }}
-          >
-            {plan.price}
-          </span>
-          <span style={{ fontSize: 15, color: plan.featured ? "var(--amber-400)" : "var(--stone-400)" }}>
-            {plan.period}
-          </span>
-        </div>
-        <p style={{
-          fontSize: 14, lineHeight: 1.6,
-          color: plan.featured ? "var(--amber-300)" : "var(--stone-500)",
-        }}>
-          {plan.desc}
-        </p>
-      </div>
-
-      {/* Feature list */}
-      <div style={{ marginBottom: 32 }}>
-        {plan.features.map((f) => (
-          <div key={f} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-            <span style={{
-              width: 20, height: 20, borderRadius: "50%", flexShrink: 0,
-              background: plan.featured ? "var(--amber-400)" : "var(--amber-100)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 11,
-              color: plan.featured ? "var(--amber-900)" : "var(--amber-700)",
-            }}>✓</span>
-            <span style={{ fontSize: 14, color: plan.featured ? "var(--amber-200)" : "var(--stone-600)" }}>
-              {f}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      <button
-        className="btn-primary"
-        style={{
-          width: "100%", justifyContent: "center", fontSize: 14,
-          background: plan.featured ? "var(--amber-400)" : "var(--amber-600)",
-          color: plan.featured ? "var(--amber-900)" : "white",
-        }}
-        onClick={() => {
-          if (plan.price === "Custom") {
-            document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-          } else {
-            setOpenPay(isOpen ? null : plan.name);
-          }
-        }}
-      >
-        {plan.cta} {plan.price !== "Custom" ? "→ Pay Now" : "→"}
-      </button>
-
-      <AnimatePresence>
-        {isOpen && plan.price !== "Custom" && (
-          <PaymentSection planName={plan.name} featured={plan.featured} />
-        )}
-      </AnimatePresence>
-
-      {plan.featured && (
-        <div style={{
-          position: "absolute", bottom: -40, right: -40,
-          width: 160, height: 160, borderRadius: "50%",
-          background: "rgba(253,211,77,0.08)", pointerEvents: "none",
-        }} />
-      )}
-    </motion.div>
-  );
-};
+    {plan.featured && (
+      <div style={{
+        position: "absolute", bottom: -40, right: -40,
+        width: 160, height: 160, borderRadius: "50%",
+        background: "rgba(253,211,77,0.08)", pointerEvents: "none",
+      }} />
+    )}
+  </motion.div>
+);
 
 // ── PRICING ───────────────────────────────────────────────────────────────────
 const Pricing = () => {
-  const [openPay, setOpenPay] = useState(null);
   const [ref, inView] = useReveal();
 
   return (
@@ -313,21 +193,12 @@ const Pricing = () => {
           />
 
           <div className="trust-badges">
-            {TRUST_BADGES.map((b) => (
-              <span key={b}>{b}</span>
-            ))}
+            {TRUST_BADGES.map((b) => <span key={b}>{b}</span>)}
           </div>
 
           <div className="pricing-grid">
             {PLANS.map((plan, i) => (
-              <PlanCard
-                key={plan.name}
-                plan={plan}
-                index={i}
-                inView={inView}
-                openPay={openPay}
-                setOpenPay={setOpenPay}
-              />
+              <PlanCard key={plan.name} plan={plan} index={i} inView={inView} />
             ))}
           </div>
         </div>

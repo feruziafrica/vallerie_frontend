@@ -39,7 +39,7 @@ export const SERVICES = [
   {
     icon: "📋",
     title: "Admin Support",
-    desc: "From inbox management to document prep, I handle the administrative backbone of your business with precision.",
+    desc: "From inbox management to document prep, We handle the administrative backbone of your business with precision.",
     tags: ["Email", "Scheduling", "Reports"],
     color: "var(--amber-100)",
   },
@@ -142,7 +142,7 @@ export const PROJECTS = [
 export const PLANS = [
   {
     name: "Starter",
-    price: "$550",
+    price: "$250",
     period: "/mo",
     desc: "Perfect for solopreneurs and early-stage businesses.",
     features: [
@@ -152,12 +152,12 @@ export const PLANS = [
       "Weekly check-in call",
       "Email support",
     ],
-    cta: "Get Started",
+    cta: "Book a Call",
     featured: false,
   },
   {
     name: "Growth",
-    price: "$750",
+    price: "$450",
     period: "/mo",
     desc: "For scaling businesses that need comprehensive support.",
     features: [
@@ -168,8 +168,8 @@ export const PLANS = [
       "Daily standups",
       "Priority response",
     ],
-    cta: "Most Popular",
-    featured: true,
+    cta: "Book a Call",
+    featured: false,
   },
   {
     name: "Executive",
@@ -192,10 +192,10 @@ export const PLANS = [
 // ── TESTIMONIALS ──────────────────────────────────────────────────────────────
 export const TESTIMONIALS = [
   {
-    name: "Sarah Mitchell",
+    name: "Sarah Natasha",
     role: "CEO, Luminary Brands",
     avatar: "SM",
-    text: "Working with Vallerie has been transformational. She manages my entire executive schedule, inbox, and social channels — I've reclaimed 15+ hours every week. Worth every cent.",
+    text: "Working with FlowMate trained talents has been transformational. She manages my entire executive schedule, inbox, and social channels — I've reclaimed 15+ hours every week. Worth every cent.",
     rating: 5,
   },
   {
@@ -206,17 +206,17 @@ export const TESTIMONIALS = [
     rating: 5,
   },
   {
-    name: "Priya Kapoor",
+    name: "Priya Kipkorir",
     role: "COO, HealthTech Inc.",
     avatar: "PK",
     text: "I was skeptical about remote VA services, but I'm completely converted. Project delivered 3 weeks early. Communication was exceptional throughout.",
     rating: 5,
   },
   {
-    name: "James Whitfield",
+    name: "James Baraka",
     role: "Partner, Apex Law Group",
     avatar: "JW",
-    text: "Discreet, efficient, and incredibly talented. Managing our legal team's schedules across time zones is no small feat. Vallerie makes it look effortless.",
+    text: "Discreet, efficient, and incredibly talented. Managing our legal team's schedules across time zones is no small feat. FlowMate makes it look effortless.",
     rating: 5,
   },
 ];

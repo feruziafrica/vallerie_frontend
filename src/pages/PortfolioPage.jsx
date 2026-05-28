@@ -579,7 +579,7 @@
 //               lineHeight: 1.8,
 //             }}
 //           >
-//             Check out some of my latest projects and see how I've helped businesses streamline
+//             Check out some of our latest projects and see how I've helped businesses streamline
 //             operations and scale growth.
 //           </p>
 //         </motion.div>

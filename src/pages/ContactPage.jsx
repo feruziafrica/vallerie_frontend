@@ -52,25 +52,6 @@ const Contact = () => {
           >
             Get In Touch
           </div>
-          <h2
-            className="font-display"
-            style={{
-              fontSize: "clamp(28px, 5.5vw, 52px)",
-              fontWeight: 600,
-              color: "var(--amber-900)",
-              letterSpacing: "-0.02em",
-              lineHeight: 1.15,
-              marginBottom: 28,
-            }}
-          >
-            Ready to
-            <br />
-            <em style={{ color: "var(--amber-600)", fontStyle: "italic" }}>
-              Transform
-            </em>
-            <br />
-            Your Business?
-          </h2>
           <p
             style={{
               fontSize: "clamp(14px, 3.5vw, 16px)",
@@ -169,11 +150,11 @@ const Contact = () => {
                 lineHeight: 1.6,
               }}
             >
-              We currently{" "}
+              We're currently{" "}
               <strong style={{ color: "var(--amber-700)" }}>
-                accepting 5 new clients
+                accepting 2 new clients.
               </strong>{" "}
-               Limited spots — book early to secure your start
+              Limited spots — book early to secure your start
               date.
             </div>
           </div>
@@ -189,27 +170,27 @@ const Contact = () => {
           <div
             style={{
               background: "var(--cream)",
-              borderRadius: 24,
-              padding: "clamp(32px, 6vw, 56px) clamp(24px, 5vw, 48px)",
+              borderRadius: 20,
+              padding: "clamp(24px, 4vw, 36px) clamp(20px, 4vw, 36px)",
               border: "1px solid var(--amber-200)",
               textAlign: "center",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 28,
+              gap: 20,
             }}
           >
             {/* Icon */}
             <div
               style={{
-                width: 72,
-                height: 72,
+                width: 56,
+                height: 56,
                 background: "var(--amber-100)",
                 borderRadius: "50%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 32,
+                fontSize: 26,
               }}
             >
               📅
@@ -220,10 +201,10 @@ const Contact = () => {
               <h3
                 className="font-display"
                 style={{
-                  fontSize: "clamp(22px, 5vw, 28px)",
+                  fontSize: "clamp(18px, 4vw, 22px)",
                   fontWeight: 600,
                   color: "var(--amber-900)",
-                  marginBottom: 12,
+                  marginBottom: 8,
                   lineHeight: 1.2,
                 }}
               >
@@ -231,9 +212,9 @@ const Contact = () => {
               </h3>
               <p
                 style={{
-                  fontSize: "clamp(13px, 3vw, 15px)",
+                  fontSize: "clamp(12px, 2.5vw, 13px)",
                   color: "var(--stone-500)",
-                  lineHeight: 1.75,
+                  lineHeight: 1.7,
                   fontWeight: 300,
                 }}
               >
@@ -248,13 +229,13 @@ const Contact = () => {
               style={{
                 width: "100%",
                 background: "var(--amber-50)",
-                borderRadius: 14,
-                padding: "18px 22px",
+                borderRadius: 12,
+                padding: "14px 18px",
                 border: "1px solid var(--amber-200)",
                 textAlign: "left",
                 display: "flex",
                 flexDirection: "column",
-                gap: 10,
+                gap: 8,
               }}
             >
               {[
@@ -286,7 +267,7 @@ const Contact = () => {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 10,
-                padding: "14px 36px",
+                padding: "12px 28px",
                 background: "#B4530E",
                 color: "#fff",
                 borderRadius: 10,

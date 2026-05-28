@@ -1,11 +1,9 @@
+
 /**
  * services/api.js
  *
  * All HTTP calls to the Django REST backend live here.
  * Components never call fetch() directly — they use these functions.
- *
- * Base URL is read from the VITE_API_BASE env variable so it works
- * in dev (proxied via vite) and in production (real domain).
  */
 
 const BASE = import.meta.env.VITE_API_BASE ?? "/api";
@@ -22,7 +20,24 @@ async function post(endpoint, body) {
   const data = await res.json();
 
   if (!res.ok) {
-    // Normalise Django REST Framework error shapes into a single message
+    const message =
+      data?.detail ??
+      Object.values(data).flat().join(" ") ??
+      `Request failed (${res.status})`;
+    throw new Error(message);
+  }
+
+  return data;
+}
+
+async function get(endpoint, params = {}) {
+  const query = new URLSearchParams(params).toString();
+  const url = `${BASE}${endpoint}${query ? `?${query}` : ''}`;
+
+  const res = await fetch(url);
+  const data = await res.json();
+
+  if (!res.ok) {
     const message =
       data?.detail ??
       Object.values(data).flat().join(" ") ??
@@ -35,55 +50,63 @@ async function post(endpoint, body) {
 
 // ── CONTACT ───────────────────────────────────────────────────────────────────
 
-/**
- * submitContact — POST /api/contact/
- * @param {{ name: string, email: string, service: string, message: string }} payload
- */
 export async function submitContact(payload) {
   return post("/contact/", payload);
 }
 
 // ── BOOKINGS ──────────────────────────────────────────────────────────────────
 
-/**
- * createBooking — POST /api/bookings/
- * @param {{ client_name: string, client_email: string, plan: string, start_date: string, notes?: string }} payload
- */
 export async function createBooking(payload) {
   return post("/bookings/", payload);
 }
 
-// ── M-PESA ────────────────────────────────────────────────────────────────────
+// ── MPESA (legacy — kept for reference) ──────────────────────────────────────
+
+// export async function initiateMpesa(payload) {
+//   return post("/payments/mpesa/initiate/", payload);
+// }
+
+// ── PAYPAL (legacy — kept for reference) ─────────────────────────────────────
+
+// export async function createPayPalOrder(payload) {
+//   return post("/payments/paypal/create-order/", payload);
+// }
+
+// export async function capturePayPalOrder(payload) {
+//   return post("/payments/paypal/capture/", payload);
+// }
+
+// ── PAYSTACK ──────────────────────────────────────────────────────────────────
 
 /**
- * initiateMpesa — POST /api/payments/mpesa/initiate/
- * Triggers an STK Push to the customer's phone.
+ * createEnrolment — POST /api/payments/enrol/
+ * Step 1: create a pending enrolment before payment.
  *
- * @param {{ phone_number: string, plan: "starter"|"growth" }} payload
- * @returns {{ message: string, checkout_request_id: string }}
+ * @param {{ student_name, student_email, phone, course, payment_method }} payload
+ * @returns {{ id, student_name, student_email, status }}
  */
-export async function initiateMpesa(payload) {
-  return post("/payments/mpesa/initiate/", payload);
+export async function createEnrolment(payload) {
+  return post("/payments/enrol/", payload);
 }
 
-// ── PAYPAL ────────────────────────────────────────────────────────────────────
-
 /**
- * createPayPalOrder — POST /api/payments/paypal/create-order/
- * @param {{ plan: "starter"|"growth" }} payload
- * @returns {{ order_id: string, approval_url: string }}
+ * initiatePayment — POST /api/payments/paystack/initiate/
+ * Step 2: get the Paystack authorization_url to redirect the user to.
+ *
+ * @param {number} enrolmentId
+ * @returns {{ authorization_url, reference, enrolment_id }}
  */
-export async function createPayPalOrder(payload) {
-  return post("/payments/paypal/create-order/", payload);
+export async function initiatePayment(enrolmentId) {
+  return post("/payments/paystack/initiate/", { enrolment_id: enrolmentId });
 }
 
 /**
- * capturePayPalOrder — POST /api/payments/paypal/capture/
- * Call this after the user returns from PayPal's approval URL.
+ * verifyPayment — GET /api/payments/paystack/verify/?reference=xxx
+ * Step 3: verify after Paystack redirects back to your site.
  *
- * @param {{ order_id: string }} payload
- * @returns {{ message: string, capture_id: string }}
+ * @param {string} reference
+ * @returns {{ status, reference, amount, channel, customer }}
  */
-export async function capturePayPalOrder(payload) {
-  return post("/payments/paypal/capture/", payload);
+export async function verifyPayment(reference) {
+  return get("/payments/paystack/verify/", { reference });
 }

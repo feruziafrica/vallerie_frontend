@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const FOOTER_LINKS = [
   ["Services", ["Admin Support", "Social Media", "Email & Calendar", "Project Mgmt", "CRM & Automation"]],
-  ["Company",  ["About Me", "Portfolio", "Testimonials", "Pricing", "Blog"]],
+  ["Company",  ["About Us", "Portfolio", "Testimonials", "Pricing", "Blog"]],
   ["Legal",    ["Privacy Policy", "Terms of Service", "Cookie Policy", "Refund Policy"]],
 ];
 
@@ -48,7 +48,7 @@ const Footer = () => {
                 </svg>
               </div>
               <span className="font-display" style={{ fontSize: 22, fontWeight: 600, color: "var(--amber-100)" }}>
-                Vallerie<span style={{ color: "var(--amber-400)" }}>VA</span>
+                FlowMate<span style={{ color: "var(--amber-400)" }}>VA</span>
               </span>
             </div>
 
