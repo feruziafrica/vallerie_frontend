@@ -217,14 +217,15 @@ export default function App() {
           <Route path="/contact"         element={<ContactPage />} />
           <Route path="/about"           element={<AboutPage />} />
 
-          {/* Change password — requires login but bypasses must_change_password
-              guard intentionally, otherwise it would redirect to itself and loop */}
+          {/* Change password */}
           <Route
             path="/change-password"
             element={
               authLoading ? <LoadingScreen /> :
-              !user       ? <Navigate to="/" replace /> :
-                            <ChangePasswordPage />
+              // Allow access if arriving via email link (has ?token=) OR already logged in
+              (!user && !new URLSearchParams(window.location.search).get('token'))
+                ? <Navigate to="/" replace />
+                : <ChangePasswordPage />
             }
           />
 
