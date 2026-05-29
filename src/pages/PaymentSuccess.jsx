@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { verifyPayment } from "@/services/api";  // replaces capturePayPalOrder
+import { verifyPayment } from "@/api/payments";  // replaces capturePayPalOrder
 import { Spinner } from "@/components/ui";
 
 /**
