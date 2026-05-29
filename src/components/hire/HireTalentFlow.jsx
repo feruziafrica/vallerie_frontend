@@ -113,7 +113,7 @@ export default function HireTalentFlow() {
     setSubmitting(true);
 
     try {
-      await api.post('/hire/', form);
+      await api.post('/api/hire/', form);
       setSubmitted(true);
     } catch (err) {
       const data = err?.response?.data;
