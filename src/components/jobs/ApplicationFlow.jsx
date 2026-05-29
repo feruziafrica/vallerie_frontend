@@ -23,7 +23,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
 
-const API_BASE    = import.meta.env.VITE_API_BASE_URL + '/api' || 'http://localhost:8000/api';
+const API_BASE    = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000') + '/api';
 const spring      = { type: 'spring', stiffness: 300, damping: 28 };
 const DRAFT_KEY   = (jobId) => `va_app_draft_${jobId}`;
 
@@ -669,3 +669,4 @@ ApplicationFlow.propTypes = {
   job:     PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
 };
+

@@ -5,7 +5,7 @@ import JobDetailModal from '@/components/jobs/JobDetailModal';
 import ApplicationFlow from '@/components/jobs/ApplicationFlow';
 import AcademyPage from './AcademyPage';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000') + '/api';
 
 const CATEGORIES = [
   { value: '', label: 'All Categories' },
@@ -445,3 +445,4 @@ export default function OpportunitiesPage() {
     </div>
   );
 }
+
