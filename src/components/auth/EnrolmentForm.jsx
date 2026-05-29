@@ -95,7 +95,7 @@ export default function EnrolmentForm({ preselectedCourse, onSuccess, onBack }) 
 
   // Fetch course list from API
   useEffect(() => {
-    api.get('/courses/')
+    api.get('/api/courses/')
       .then(({ data }) => {
         const list = Array.isArray(data) ? data : (data.results || []);
         setCourses(list.filter(c => c.is_active !== false));
@@ -144,7 +144,7 @@ export default function EnrolmentForm({ preselectedCourse, onSuccess, onBack }) 
     setSubmitError('');
 
     try {
-      const { data } = await api.post('/payments/enrol/', {
+      const { data } = await api.post('/api/payments/enrol/', {
         student_name:   form.student_name.trim(),
         student_email:  form.student_email.trim().toLowerCase(),
         phone:          form.phone.trim(),
