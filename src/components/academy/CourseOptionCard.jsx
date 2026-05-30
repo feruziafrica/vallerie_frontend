@@ -608,7 +608,7 @@ export default function CourseOptionCard({ course, isSelected, onSelect, onEnrol
   const [imgHovered,  setImgHovered]  = useState(false);
 
   // Card thumbnail — use uploaded thumbnail from VPS if set, fallback to placeholder
-  const thumbnail = course.thumbnail_url || `https://picsum.photos/seed/${course.id}/640/360`;
+  const thumbnail = course.thumbnail || `https://picsum.photos/seed/${course.id}/640/360`;
 
   const hasDiscount        = course.discount_percent > 0;
   const discountedPriceKes = hasDiscount
@@ -839,7 +839,7 @@ CourseOptionCard.propTypes = {
     lessons_count:  PropTypes.number.isRequired,
     price_kes:      PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     price_usd:      PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    thumbnail_url:  PropTypes.string,
+    thumbnail:  PropTypes.string,
     // ── YouTube (replaces preview_bunny_video_id) ──────────────────────────
     preview_embed_url: PropTypes.string,   // built server-side by CourseListSerializer
     // ── Social proof ──────────────────────────────────────────────────────
@@ -859,3 +859,4 @@ CourseOptionCard.propTypes = {
 CourseOptionCard.defaultProps = {
   onEnrol: null,
 };
+
