@@ -100,7 +100,7 @@ const Services = () => {
       <section id="services" ref={ref} style={{ background: "var(--warm-white)" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
           <SectionHeader
-            label="What I Offer"
+            label="What We Offer"
             title={
               <>
                 Services Designed for
