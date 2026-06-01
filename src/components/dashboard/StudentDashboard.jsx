@@ -337,11 +337,13 @@ export default function StudentDashboard({ user }) {
   const [loading,          setLoading]          = useState(false);
   const [error,            setError]            = useState(null);
 
+  // Close sidebar on mobile when screen size changes to mobile
   useEffect(() => {
     if (isMobile) setSidebarOpen(false);
     else setSidebarOpen(true);
   }, [isMobile]);
 
+  // Fetch course data on mount
   useEffect(() => {
     let isMounted = true;
     const abortController = new AbortController();
@@ -368,6 +370,7 @@ export default function StudentDashboard({ user }) {
     return () => { isMounted = false; abortController.abort(); };
   }, []);
 
+  // Fetch section-specific data
   useEffect(() => {
     let isMounted = true;
     const abortController = new AbortController();
@@ -417,8 +420,6 @@ export default function StudentDashboard({ user }) {
     if (isMobile) setSidebarOpen(false);
   }, [isMobile]);
 
-  const isCertificate = activeSection === STUDENT_SECTIONS.CERTIFICATE;
-
   const renderSection = () => {
     const themeWithBrand = {
       ...THEME,
@@ -440,6 +441,7 @@ export default function StudentDashboard({ user }) {
     }
   };
 
+  // On desktop: sidebar pushes content. On mobile: sidebar overlays content (width = 0).
   const desktopSidebarWidth = sidebarOpen ? SIDEBAR_EXPANDED_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
 
   return (
@@ -462,10 +464,14 @@ export default function StudentDashboard({ user }) {
         position: 'relative',
       }}>
 
+        {/* ── Mobile hamburger button (shown when sidebar is closed on mobile) ── */}
         {isMobile && !sidebarOpen && (
           <MobileMenuButton onClick={() => setSidebarOpen(true)} />
         )}
 
+        {/* ── Sidebar wrapper ──
+            Desktop: occupies real space (pushes content)
+            Mobile: zero-width overlay (content stays full width) ── */}
         <div style={{
           width:    isMobile ? 0 : `${desktopSidebarWidth}px`,
           minWidth: isMobile ? 0 : `${desktopSidebarWidth}px`,
@@ -485,6 +491,7 @@ export default function StudentDashboard({ user }) {
           />
         </div>
 
+        {/* ── Mobile backdrop ── */}
         <AnimatePresence>
           {isMobile && sidebarOpen && (
             <motion.div
@@ -527,30 +534,22 @@ export default function StudentDashboard({ user }) {
             style={{
               flex: 1,
               overflowY: 'auto',
-              // Certificate gets no horizontal padding so it fills edge-to-edge
-              padding: isCertificate
-                ? (isMobile ? '24px 0 60px' : 'clamp(24px, 3vw, 40px) 0 60px')
-                : (isMobile ? '24px 16px 60px' : 'clamp(24px, 3vw, 40px) clamp(20px, 4vw, 48px) 60px'),
+              padding: isMobile
+                ? '24px 16px 60px'
+                : 'clamp(24px, 3vw, 40px) clamp(20px, 4vw, 48px) 60px',
             }}
           >
-            {/* PageHeader + ProgressBanner always have their own padding */}
-            <div style={{
-              padding: isCertificate
-                ? (isMobile ? '0 16px' : '0 clamp(20px, 4vw, 48px)')
-                : '0',
-            }}>
-              <PageHeader activeSection={activeSection} courseData={courseData} />
+            <div style={{ maxWidth: '920px', margin: '0 auto' }}>
+
+              <PageHeader
+                activeSection={activeSection}
+                courseData={courseData}
+              />
+
               {activeSection === STUDENT_SECTIONS.COURSE && progressData && (
                 <ProgressBanner progressData={progressData} />
               )}
-            </div>
 
-            {/* Section content */}
-            <div style={{
-              padding: isCertificate
-                ? (isMobile ? '0 16px' : '0 clamp(20px, 4vw, 48px)')
-                : '0',
-            }}>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeSection}
@@ -562,8 +561,8 @@ export default function StudentDashboard({ user }) {
                   {renderSection()}
                 </motion.div>
               </AnimatePresence>
-            </div>
 
+            </div>
           </main>
         </div>
 
