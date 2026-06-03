@@ -12,24 +12,17 @@ if (typeof document !== 'undefined' && !document.getElementById('cert-fonts')) {
 
 // ── Name resolver — never falls back to email ─────────────────────────────────
 function resolveStudentName(certificateData, user) {
-  // 1. Explicit name on the certificate record
-  // 2. Compose from first + last
-  // 3. Full name from user object
   const raw =
     certificateData?.student_name?.trim() ||
     [user?.first_name, user?.last_name].filter(Boolean).map(s => s.trim()).join(' ') ||
     user?.full_name?.trim() ||
-    // 4. Split email local part as last resort (never show raw email)
     (user?.email
       ? user.email.split('@')[0].replace(/[._\-]/g, ' ')
       : '');
 
   if (raw.trim()) {
-    return raw
-      .toLowerCase()
-      .replace(/\b\w/g, c => c.toUpperCase());
+    return raw.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
   }
-
   return 'Valued Graduate';
 }
 
@@ -70,10 +63,8 @@ function CornerOrnament({ flip }) {
 function MedallionSeal({ size = 90 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 90 90">
-      {/* Outer ring */}
       <circle cx="45" cy="45" r="42" fill="none" stroke="#B8652F" strokeWidth="1.5" opacity="0.8"/>
       <circle cx="45" cy="45" r="37" fill="none" stroke="#B8652F" strokeWidth="0.5" opacity="0.5"/>
-      {/* Radial ticks */}
       {Array.from({ length: 24 }).map((_, i) => {
         const a = (i * 360) / 24;
         const r1 = 38, r2 = 42;
@@ -83,7 +74,6 @@ function MedallionSeal({ size = 90 }) {
         const y2 = 45 + r2 * Math.sin((a * Math.PI) / 180);
         return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#B8652F" strokeWidth="0.8" opacity="0.6"/>;
       })}
-      {/* Inner filled circle */}
       <circle cx="45" cy="45" r="30" fill="url(#sealGrad)"/>
       <defs>
         <radialGradient id="sealGrad" cx="40%" cy="35%">
@@ -91,9 +81,7 @@ function MedallionSeal({ size = 90 }) {
           <stop offset="100%" stopColor="#DFC9AE"/>
         </radialGradient>
       </defs>
-      {/* Star */}
       <text x="45" y="50" textAnchor="middle" fontSize="22" fill="#B8652F" fontFamily="Georgia">★</text>
-      {/* "CERTIFIED" arc text approximation */}
       <text x="45" y="68" textAnchor="middle" fontSize="5.5"
         fill="#8B4513" fontFamily="Georgia" letterSpacing="3">CERTIFIED</text>
     </svg>
@@ -104,12 +92,12 @@ function MedallionSeal({ size = 90 }) {
 function OrnamentalDivider() {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', margin: '0 auto' }}>
-      <div style={{ height: '1px', width: '120px', background: 'linear-gradient(to right, transparent, #B8652F)' }}/>
+      <div style={{ height: '1px', width: '80px', background: 'linear-gradient(to right, transparent, #B8652F)' }}/>
       <svg width="20" height="20" viewBox="0 0 20 20">
         <path d="M10 2 L11.8 7.6 L18 7.6 L13 11 L14.8 16.6 L10 13.2 L5.2 16.6 L7 11 L2 7.6 L8.2 7.6 Z"
           fill="#B8652F" opacity="0.8"/>
       </svg>
-      <div style={{ height: '1px', width: '120px', background: 'linear-gradient(to left, transparent, #B8652F)' }}/>
+      <div style={{ height: '1px', width: '80px', background: 'linear-gradient(to left, transparent, #B8652F)' }}/>
     </div>
   );
 }
@@ -133,8 +121,9 @@ function CertificateVisual({ studentName, certificateId, issuedAt, courseData, b
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '4% 6%',
+        padding: '5% 7%',
         fontFamily: "'Cormorant Garamond', Georgia, serif",
+        boxSizing: 'border-box',
       }}
     >
       {/* ── Background pattern ── */}
@@ -146,29 +135,19 @@ function CertificateVisual({ studentName, certificateId, issuedAt, courseData, b
         `,
       }}/>
 
-      {/* ── Outer border frame ── */}
-      <div style={{
-        position: 'absolute', inset: '14px',
-        border: '2px solid #B8652F',
-        pointerEvents: 'none', zIndex: 1,
-      }}/>
-      {/* ── Inner border frame ── */}
-      <div style={{
-        position: 'absolute', inset: '22px',
-        border: '0.5px solid rgba(184,101,47,0.4)',
-        pointerEvents: 'none', zIndex: 1,
-      }}/>
-      {/* ── Thin accent line top/bottom ── */}
-      <div style={{ position: 'absolute', top: '32px', left: '32px', right: '32px', height: '1px', background: 'linear-gradient(to right, transparent, rgba(184,101,47,0.3), transparent)', zIndex: 1 }}/>
-      <div style={{ position: 'absolute', bottom: '32px', left: '32px', right: '32px', height: '1px', background: 'linear-gradient(to right, transparent, rgba(184,101,47,0.3), transparent)', zIndex: 1 }}/>
+      {/* ── Border frames ── */}
+      <div style={{ position: 'absolute', inset: '10px', border: '2px solid #B8652F', pointerEvents: 'none', zIndex: 1 }}/>
+      <div style={{ position: 'absolute', inset: '16px', border: '0.5px solid rgba(184,101,47,0.4)', pointerEvents: 'none', zIndex: 1 }}/>
+      <div style={{ position: 'absolute', top: '24px', left: '24px', right: '24px', height: '1px', background: 'linear-gradient(to right, transparent, rgba(184,101,47,0.3), transparent)', zIndex: 1 }}/>
+      <div style={{ position: 'absolute', bottom: '24px', left: '24px', right: '24px', height: '1px', background: 'linear-gradient(to right, transparent, rgba(184,101,47,0.3), transparent)', zIndex: 1 }}/>
 
       {/* ── Corner ornaments ── */}
-      <div style={{ position: 'absolute', top: '14px', left: '14px', zIndex: 2 }}><CornerOrnament /></div>
-      <div style={{ position: 'absolute', top: '14px', right: '14px', transform: 'scale(-1,1)', zIndex: 2 }}><CornerOrnament /></div>
-      <div style={{ position: 'absolute', bottom: '14px', left: '14px', transform: 'scale(1,-1)', zIndex: 2 }}><CornerOrnament /></div>
-      <div style={{ position: 'absolute', bottom: '14px', right: '14px', transform: 'scale(-1,-1)', zIndex: 2 }}><CornerOrnament /></div>
+      <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 2 }}><CornerOrnament /></div>
+      <div style={{ position: 'absolute', top: '10px', right: '10px', transform: 'scale(-1,1)', zIndex: 2 }}><CornerOrnament /></div>
+      <div style={{ position: 'absolute', bottom: '10px', left: '10px', transform: 'scale(1,-1)', zIndex: 2 }}><CornerOrnament /></div>
+      <div style={{ position: 'absolute', bottom: '10px', right: '10px', transform: 'scale(-1,-1)', zIndex: 2 }}><CornerOrnament /></div>
 
-      {/* ── Watermark large star ── */}
+      {/* ── Watermark ── */}
       <div style={{
         position: 'absolute', right: '7%', bottom: '12%', zIndex: 0,
         fontSize: '160px', color: '#B8652F', opacity: 0.025,
@@ -178,22 +157,38 @@ function CertificateVisual({ studentName, certificateId, issuedAt, courseData, b
       {/* ── Content ── */}
       <div style={{ zIndex: 2, width: '100%', textAlign: 'center' }}>
 
-        {/* Academy name */}
+        {/* ── Academy / brand name
+            KEY FIX: replaced letterSpacing '0.5em' (breaks on mobile) with
+            a clamped value that stays contained at all widths.
+            Also added overflow:hidden + text truncation as safety net.        ── */}
         <p style={{
           fontFamily: "'Cinzel', Georgia, serif",
-          fontSize: 'clamp(8px, 1.1vw, 12px)',
-          letterSpacing: '0.5em', color: '#8B4513',
-          textTransform: 'uppercase', margin: '0 0 2% 0',
+          fontSize: 'clamp(6px, 1.8vw, 11px)',
+          // Safe letter-spacing: at most 0.2em so the word never overflows
+          letterSpacing: 'clamp(0.05em, 0.5vw, 0.2em)',
+          color: '#8B4513',
+          textTransform: 'uppercase',
+          margin: '0 0 2% 0',
+          // Prevent overflow in any edge case
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          maxWidth: '100%',
+          padding: '0 2%',
         }}>
           {brandName}
         </p>
 
-        {/* Headline */}
+        {/* ── "Certificate of Completion" headline ── */}
         <h1 style={{
           fontFamily: "'Cinzel', Georgia, serif",
-          fontSize: 'clamp(18px, 3.2vw, 36px)',
-          fontWeight: '400', letterSpacing: '0.12em',
-          color: '#3D2B1F', margin: '0 0 1.5% 0', lineHeight: 1.2,
+          fontSize: 'clamp(12px, 3.5vw, 36px)',
+          fontWeight: '400',
+          // Reduced from 0.12em — still elegant but safe
+          letterSpacing: 'clamp(0.02em, 0.4vw, 0.1em)',
+          color: '#3D2B1F',
+          margin: '0 0 1.5% 0',
+          lineHeight: 1.2,
         }}>
           Certificate of Completion
         </h1>
@@ -203,20 +198,31 @@ function CertificateVisual({ studentName, certificateId, issuedAt, courseData, b
         {/* "This is to certify that" */}
         <p style={{
           fontFamily: "'Cormorant Garamond', Georgia, serif",
-          fontSize: 'clamp(9px, 1.1vw, 13px)',
-          letterSpacing: '0.25em', color: '#8B6E5A',
-          textTransform: 'uppercase', margin: '2% 0 1.2% 0',
+          fontSize: 'clamp(7px, 1.4vw, 13px)',
+          letterSpacing: 'clamp(0.05em, 0.4vw, 0.2em)',
+          color: '#8B6E5A',
+          textTransform: 'uppercase',
+          margin: '2% 0 1.2% 0',
         }}>
           This is to certify that
         </p>
 
-        {/* Student name — the hero element */}
+        {/* ── Student name — hero element ── */}
         <h2 style={{
           fontFamily: "'Cormorant Garamond', Georgia, serif",
-          fontSize: 'clamp(26px, 5.5vw, 60px)',
-          fontWeight: '400', fontStyle: 'italic',
-          color: '#B8652F', margin: '0 0 0.5% 0', lineHeight: 1.1,
+          fontSize: 'clamp(18px, 5.5vw, 60px)',
+          fontWeight: '400',
+          fontStyle: 'italic',
+          color: '#B8652F',
+          margin: '0 0 0.5% 0',
+          lineHeight: 1.1,
           textShadow: '0 2px 20px rgba(184,101,47,0.15)',
+          // Allow wrapping for very long names instead of overflowing
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word',
+          maxWidth: '90%',
+          marginLeft: 'auto',
+          marginRight: 'auto',
         }}>
           {studentName}
         </h2>
@@ -230,50 +236,67 @@ function CertificateVisual({ studentName, certificateId, issuedAt, courseData, b
         {/* Body copy */}
         <p style={{
           fontFamily: "'Cormorant Garamond', Georgia, serif",
-          fontSize: 'clamp(9px, 1.2vw, 14px)',
-          color: '#5C3A1F', lineHeight: 1.7,
-          maxWidth: '65%', margin: '0 auto 1.5% auto',
+          fontSize: 'clamp(8px, 1.3vw, 14px)',
+          color: '#5C3A1F',
+          lineHeight: 1.7,
+          maxWidth: '70%',
+          margin: '0 auto 1.5% auto',
           letterSpacing: '0.03em',
         }}>
           has successfully completed all requirements of the programme
         </p>
 
-        {/* Course name */}
+        {/* ── Course name ──
+            KEY FIX: letterSpacing reduced + overflow guard added            ── */}
         <p style={{
           fontFamily: "'Cinzel', Georgia, serif",
-          fontSize: 'clamp(11px, 1.9vw, 20px)',
-          fontWeight: '600', letterSpacing: '0.1em',
-          color: '#3D2B1F', textTransform: 'uppercase',
+          fontSize: 'clamp(8px, 1.8vw, 20px)',
+          fontWeight: '600',
+          letterSpacing: 'clamp(0.02em, 0.3vw, 0.08em)',
+          color: '#3D2B1F',
+          textTransform: 'uppercase',
           margin: '0 0 3% 0',
-          padding: '1% 4%',
+          padding: '1% 3%',
           display: 'inline-block',
           borderTop: '0.5px solid rgba(184,101,47,0.3)',
           borderBottom: '0.5px solid rgba(184,101,47,0.3)',
+          maxWidth: '90%',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
         }}>
           {courseData?.name || 'VA Fundamentals Programme'}
         </p>
 
         {/* ── Footer row ── */}
         <div style={{
-          display: 'flex', justifyContent: 'space-between',
-          alignItems: 'flex-end', width: '85%',
-          margin: '0 auto', paddingTop: '2.5%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          width: '88%',
+          margin: '0 auto',
+          paddingTop: '2.5%',
           borderTop: '0.5px solid rgba(184,101,47,0.25)',
         }}>
           {/* Date */}
-          <div style={{ textAlign: 'center', minWidth: '120px' }}>
+          <div style={{ textAlign: 'center', minWidth: '0', flex: '0 0 auto' }}>
             <p style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontSize: 'clamp(9px, 1vw, 12px)', color: '#5C3A1F',
-              letterSpacing: '0.05em', margin: '0 0 4px 0',
+              fontSize: 'clamp(7px, 1.1vw, 12px)',
+              color: '#5C3A1F',
+              letterSpacing: '0.03em',
+              margin: '0 0 4px 0',
+              whiteSpace: 'nowrap',
             }}>
               {issueDate}
             </p>
             <div style={{ height: '0.5px', background: '#B8652F', margin: '0 0 4px 0', opacity: 0.6 }}/>
             <p style={{
               fontFamily: "'Cinzel', Georgia, serif",
-              fontSize: 'clamp(6px, 0.7vw, 8px)', color: '#8B6E5A',
-              letterSpacing: '0.25em', textTransform: 'uppercase',
+              fontSize: 'clamp(5px, 0.8vw, 8px)',
+              color: '#8B6E5A',
+              letterSpacing: 'clamp(0.05em, 0.3vw, 0.2em)',
+              textTransform: 'uppercase',
             }}>
               Date Issued
             </p>
@@ -283,19 +306,27 @@ function CertificateVisual({ studentName, certificateId, issuedAt, courseData, b
           <MedallionSeal size={86} />
 
           {/* Certificate ID */}
-          <div style={{ textAlign: 'center', minWidth: '120px' }}>
+          <div style={{ textAlign: 'center', minWidth: '0', flex: '0 0 auto' }}>
             <p style={{
               fontFamily: 'monospace',
-              fontSize: 'clamp(8px, 0.9vw, 10px)', color: '#5C3A1F',
-              letterSpacing: '0.08em', margin: '0 0 4px 0',
+              fontSize: 'clamp(6px, 1vw, 10px)',
+              color: '#5C3A1F',
+              letterSpacing: '0.05em',
+              margin: '0 0 4px 0',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              maxWidth: '18vw',
             }}>
               {certificateId || 'PENDING'}
             </p>
             <div style={{ height: '0.5px', background: '#B8652F', margin: '0 0 4px 0', opacity: 0.6 }}/>
             <p style={{
               fontFamily: "'Cinzel', Georgia, serif",
-              fontSize: 'clamp(6px, 0.7vw, 8px)', color: '#8B6E5A',
-              letterSpacing: '0.25em', textTransform: 'uppercase',
+              fontSize: 'clamp(5px, 0.8vw, 8px)',
+              color: '#8B6E5A',
+              letterSpacing: 'clamp(0.05em, 0.3vw, 0.2em)',
+              textTransform: 'uppercase',
             }}>
               Certificate ID
             </p>
@@ -336,7 +367,6 @@ export default function CertificateSection({
   theme,
 }) {
 
-  // ── Loading ──────────────────────────────────────────────────────────────
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
@@ -358,12 +388,11 @@ export default function CertificateSection({
     );
   }
 
-  // ── Resolve name (never email) ───────────────────────────────────────────
   const studentName = resolveStudentName(certificateData, user);
   const isIssued    = certificateData?.status === 'issued';
   const isPending   = certificateData?.status === 'pending';
   const certStatus  = isIssued ? 'issued' : isPending ? 'pending' : 'locked';
-  const brandName = certificateData?.brand_name || 'FlowMate Academy';
+  const brandName   = certificateData?.brand_name || 'FlowMate Academy';
 
   return (
     <motion.div
@@ -442,12 +471,25 @@ export default function CertificateSection({
           boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap', marginBottom: '16px' }}>
+        <div style={{
+          display: 'flex', alignItems: 'flex-start',
+          justifyContent: 'space-between', gap: '16px',
+          flexWrap: 'wrap', marginBottom: '16px',
+        }}>
           <div>
-            <p style={{ fontSize: '9px', fontWeight: '700', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.14em', textTransform: 'uppercase', margin: '0 0 6px' }}>
+            <p style={{
+              fontSize: '9px', fontWeight: '700',
+              color: 'rgba(255,255,255,0.3)',
+              letterSpacing: '0.14em', textTransform: 'uppercase',
+              margin: '0 0 6px',
+            }}>
               Your Certificate
             </p>
-            <h3 style={{ fontSize: '16px', fontWeight: '800', color: '#f5efe7', margin: '0 0 4px', letterSpacing: '-0.01em' }}>
+            <h3 style={{
+              fontSize: '16px', fontWeight: '800',
+              color: '#f5efe7', margin: '0 0 4px',
+              letterSpacing: '-0.01em',
+            }}>
               {courseData?.name || 'VA Fundamentals Programme'}
             </h3>
             {isIssued && certificateData?.issued_at && (
@@ -467,7 +509,6 @@ export default function CertificateSection({
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
               style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
             >
-              {/* Share row */}
               <div style={{
                 padding: '12px 16px', borderRadius: '12px',
                 background: 'rgba(34,197,94,0.07)',
@@ -482,7 +523,6 @@ export default function CertificateSection({
                 </p>
               </div>
 
-              {/* Buttons */}
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -537,7 +577,6 @@ export default function CertificateSection({
               key="locked"
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             >
-              {/* Steps to unlock */}
               <div style={{ marginBottom: '14px' }}>
                 {[
                   { done: true,  label: 'Enrolled in the course' },
@@ -619,12 +658,3 @@ CertificateSection.defaultProps = {
   loading:         false,
   error:           null,
 };
-
-
-
-
-
-
-
-
-
