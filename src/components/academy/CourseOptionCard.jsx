@@ -68,11 +68,13 @@ function StarRating({ rating = 0, reviewCount = 0, size = 'sm' }) {
 // `previewEmbedUrl` is the domain-locked embed URL built by the serializer.
 // The raw YouTube video ID never lives in this component — only the embed URL.
 // We extract the video ID solely to fetch YouTube's hosted thumbnail image.
-function YouTubePreviewPlayer({ previewEmbedUrl, title }) {
-  const [playing,   setPlaying]   = useState(false);
+function YouTubePreviewPlayer({ previewEmbedUrl, title, thumbnail }) {
+  const [playing,    setPlaying]   = useState(false);
   const [thumbError, setThumbError] = useState(false);
 
-  const thumbnailUrl = getYouTubeThumbnail(previewEmbedUrl);
+  // Use course thumbnail if available, fallback to YouTube auto-thumbnail
+  const youtubeFallback = getYouTubeThumbnail(previewEmbedUrl);
+  const thumbnailUrl = thumbnail || youtubeFallback;
 
   // ── No video configured ──────────────────────────────────────────────────
   if (!previewEmbedUrl) {
@@ -373,8 +375,8 @@ function CoursePreviewModal({ course, onClose, onEnrol, isSelected }) {
               <YouTubePreviewPlayer
                 previewEmbedUrl={course.preview_embed_url}
                 title={course.name}
+                thumbnail={course.thumbnail}
               />
-
               {/* Stats */}
               <div style={{ padding: '12px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '7px' }}>
                 {[
