@@ -140,10 +140,14 @@ function ResourceViewerModal({ resource, onClose, theme }) {
 
   // Viewer body
   const renderViewer = () => {
-    if (resource.type === 'pdf')                             return <PdfViewer   url={resource.url} title={resource.title} />;
-    if (resource.type === 'doc' || resource.type === 'docx') return <DocViewer   url={resource.url} title={resource.title} />;
-    if (isImage(resource.type))                              return <ImageViewer url={resource.url} title={resource.title} />;
-    return <FallbackViewer url={resource.url} type={resource.type} />;
+    // Detect type from URL extension as fallback
+    const ext = resource.url?.split('.').pop()?.toLowerCase() || '';
+    const effectiveType = resource.type === 'link' ? ext : resource.type;
+
+    if (effectiveType === 'pdf')                               return <PdfViewer   url={resource.url} title={resource.title} />;
+    if (effectiveType === 'doc' || effectiveType === 'docx')   return <DocViewer   url={resource.url} title={resource.title} />;
+    if (isImage(effectiveType))                                return <ImageViewer url={resource.url} title={resource.title} />;
+    return <FallbackViewer url={resource.url} type={effectiveType} />;
   };
 
   return (
