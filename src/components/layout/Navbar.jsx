@@ -16,21 +16,33 @@ const NAV_LINKS = [
 ]
 
 // ── LOGO ──────────────────────────────────────────────────────────────────────
+// const Logo = () => (
+//   <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+//     <div style={{
+//       width: '36px', height: '36px', borderRadius: '8px',
+//       background: '#B5530A', display: 'flex',
+//       alignItems: 'center', justifyContent: 'center',
+//       flexShrink: 0,
+//     }}>
+//       <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+//         <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
+//       </svg>
+//     </div>
+//     <span style={{ fontSize: '16px', fontWeight: 700, color: '#2C0F00' }}>
+//       FlowMate<span style={{ color: '#B5530A' }}>VA</span>
+//     </span>
+//   </Link>
+// );
+
+import flowmateLogo from '@/assets/flowmate-logo.svg';
+
 const Logo = () => (
-  <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-    <div style={{
-      width: '36px', height: '36px', borderRadius: '8px',
-      background: '#B5530A', display: 'flex',
-      alignItems: 'center', justifyContent: 'center',
-      flexShrink: 0,
-    }}>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
-      </svg>
-    </div>
-    <span style={{ fontSize: '16px', fontWeight: 700, color: '#2C0F00' }}>
-      FlowMate<span style={{ color: '#B5530A' }}>VA</span>
-    </span>
+  <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+    <img
+      src={flowmateLogo}
+      alt="FlowMate Talents"
+      style={{ height: '40px', width: 'auto' }}
+    />
   </Link>
 );
 
