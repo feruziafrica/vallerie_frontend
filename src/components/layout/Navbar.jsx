@@ -34,17 +34,27 @@ const NAV_LINKS = [
 //   </Link>
 // );
 
-import flowmateLogo from '@/assets/flowmate-logo.svg';
+import flowmateLogo from '@/assets/flowmate-logo2.png';
 
 const Logo = () => (
-  <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+  <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
     <img
       src={flowmateLogo}
-      alt="FlowMate Talents"
-      style={{ height: '40px', width: 'auto' }}
+      alt="FlowMate"
+      style={{
+        height: '36px',
+        width: '36px',
+        objectFit: 'contain',
+        background: 'transparent',
+      }}
     />
+    <span style={{ fontSize: '16px', fontWeight: 700, color: '#2C0F00' }}>
+      FlowMate<span style={{ color: '#B5530A' }}>VA</span>
+    </span>
   </Link>
 );
+
+
 
 // ── DESKTOP NAV ───────────────────────────────────────────────────────────────
 const DesktopNav = ({ onNavClick, activeSection }) => (
