@@ -1,20 +1,96 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 
+const YT_ORIGIN = 'https://www.youtube.com';
+
 export default function VideoPlayer({ lesson, theme, iframeRef }) {
   const [playerReady, setPlayerReady] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const isYouTube = useMemo(
+    () => /(youtube(-nocookie)?\.com|youtu\.be)/.test(lesson?.video_embed_url || ''),
+    [lesson?.video_embed_url]
+  );
 
   const embedUrl = useMemo(() => {
     if (!lesson?.video_embed_url) return null;
-    const url = lesson.video_embed_url;
-    return url.includes('enablejsapi') ? url : `${url}&enablejsapi=1`;
-  }, [lesson?.video_embed_url]);
+    const raw = lesson.video_embed_url;
+
+    if (!isYouTube) return raw;
+
+    try {
+      const url = new URL(raw);
+      url.searchParams.set('enablejsapi', '1');
+      url.searchParams.set('modestbranding', '1');
+      url.searchParams.set('rel', '0');
+      url.searchParams.set('controls', '0');
+      url.searchParams.set('iv_load_policy', '3');
+      url.searchParams.set('playsinline', '1');
+      url.searchParams.set('disablekb', '1');
+      if (typeof window !== 'undefined') {
+        url.searchParams.set('origin', window.location.origin);
+      }
+      return url.toString();
+    } catch {
+      return raw;
+    }
+  }, [lesson?.video_embed_url, isYouTube]);
 
   useEffect(() => {
     setPlayerReady(false);
+    setIsPlaying(false);
     const t = setTimeout(() => setPlayerReady(true), 80);
     return () => clearTimeout(t);
   }, [lesson?.id]);
+
+  // Track YouTube player state so the overlay knows whether to show
+  // a play or pause affordance.
+  useEffect(() => {
+    if (!isYouTube) return;
+
+    const handleMessage = (event) => {
+      if (event.origin !== YT_ORIGIN) return;
+      let data;
+      try {
+        data = JSON.parse(event.data);
+      } catch {
+        return;
+      }
+      if (data?.event === 'infoDelivery' && typeof data?.info?.playerState === 'number') {
+        setIsPlaying(data.info.playerState === 1); // 1 = YT.PlayerState.PLAYING
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isYouTube, lesson?.id]);
+
+  // Once the YouTube iframe loads, register for state-change events
+  // via the IFrame Player API postMessage protocol.
+  const handleIframeLoad = () => {
+    if (!isYouTube) return;
+    const win = iframeRef?.current?.contentWindow;
+    if (!win) return;
+    setTimeout(() => {
+      win.postMessage(JSON.stringify({ event: 'listening', id: lesson?.id }), YT_ORIGIN);
+      win.postMessage(
+        JSON.stringify({ event: 'command', func: 'addEventListener', args: ['onStateChange'] }),
+        YT_ORIGIN
+      );
+    }, 250);
+  };
+
+  // Overlay intercepts every click before it reaches the iframe, so
+  // YouTube's logo/title/end-card links can never navigate the user
+  // away from the site. We replicate play/pause via postMessage.
+  const handleOverlayClick = () => {
+    const win = iframeRef?.current?.contentWindow;
+    if (!win) return;
+    win.postMessage(
+      JSON.stringify({ event: 'command', func: isPlaying ? 'pauseVideo' : 'playVideo', args: [] }),
+      YT_ORIGIN
+    );
+  };
 
   return (
     <motion.div
@@ -67,16 +143,48 @@ export default function VideoPlayer({ lesson, theme, iframeRef }) {
       {/* ── Video frame ── */}
       <div style={{ aspectRatio: '16/9', position: 'relative', background: '#000' }}>
         {embedUrl && playerReady ? (
-          <iframe
-            ref={iframeRef}
-            key={`${lesson.id}-yt`}
-            src={embedUrl}
-            title={lesson?.title || 'Lesson video'}
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', display: 'block' }}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-            loading="lazy"
-          />
+          <>
+            <iframe
+              ref={iframeRef}
+              key={`${lesson.id}-${isYouTube ? 'yt' : 'bunny'}`}
+              src={embedUrl}
+              title={lesson?.title || 'Lesson video'}
+              onLoad={handleIframeLoad}
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', display: 'block' }}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+            />
+
+            {/* Click-blocking overlay — YouTube only. Sits above the iframe
+                so no click ever reaches YouTube's own DOM/links, while still
+                letting users toggle play/pause through us. */}
+            {isYouTube && (
+              <div
+                onClick={handleOverlayClick}
+                role="button"
+                aria-label={isPlaying ? 'Pause video' : 'Play video'}
+                style={{
+                  position: 'absolute', inset: 0, zIndex: 2,
+                  cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                {!isPlaying && (
+                  <div style={{
+                    width: '56px', height: '56px', borderRadius: '50%',
+                    background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <polygon points="5,3 19,12 5,21" fill="#fff" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         ) : embedUrl && !playerReady ? (
           <div style={{
             position: 'absolute', inset: 0,
