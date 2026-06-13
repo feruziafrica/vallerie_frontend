@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 const YT_ORIGIN = 'https://www.youtube.com';
@@ -6,6 +6,8 @@ const YT_ORIGIN = 'https://www.youtube.com';
 export default function VideoPlayer({ lesson, theme, iframeRef }) {
   const [playerReady, setPlayerReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const containerRef = useRef(null);
 
   const isYouTube = useMemo(
     () => /(youtube(-nocookie)?\.com|youtu\.be)/.test(lesson?.video_embed_url || ''),
@@ -27,6 +29,7 @@ export default function VideoPlayer({ lesson, theme, iframeRef }) {
       url.searchParams.set('iv_load_policy', '3');
       url.searchParams.set('playsinline', '1');
       url.searchParams.set('disablekb', '1');
+      url.searchParams.set('fs', '0'); // hide YouTube's own fullscreen button — we provide ours
       if (typeof window !== 'undefined') {
         url.searchParams.set('origin', window.location.origin);
       }
@@ -43,8 +46,7 @@ export default function VideoPlayer({ lesson, theme, iframeRef }) {
     return () => clearTimeout(t);
   }, [lesson?.id]);
 
-  // Track YouTube player state so the overlay knows whether to show
-  // a play or pause affordance.
+  // Track YouTube player state for the play/pause overlay icon.
   useEffect(() => {
     if (!isYouTube) return;
 
@@ -65,8 +67,7 @@ export default function VideoPlayer({ lesson, theme, iframeRef }) {
     return () => window.removeEventListener('message', handleMessage);
   }, [isYouTube, lesson?.id]);
 
-  // Once the YouTube iframe loads, register for state-change events
-  // via the IFrame Player API postMessage protocol.
+  // Register for state-change events once the YouTube iframe finishes loading.
   const handleIframeLoad = () => {
     if (!isYouTube) return;
     const win = iframeRef?.current?.contentWindow;
@@ -80,9 +81,63 @@ export default function VideoPlayer({ lesson, theme, iframeRef }) {
     }, 250);
   };
 
+  // Keep isFullscreen in sync with the real fullscreen element — covers
+  // exits via Esc or the browser's own fullscreen UI too.
+  useEffect(() => {
+    const handler = () => {
+      const fsEl =
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement;
+      setIsFullscreen(fsEl === containerRef.current);
+    };
+    document.addEventListener('fullscreenchange', handler);
+    document.addEventListener('webkitfullscreenchange', handler);
+    document.addEventListener('mozfullscreenchange', handler);
+    document.addEventListener('MSFullscreenChange', handler);
+    return () => {
+      document.removeEventListener('fullscreenchange', handler);
+      document.removeEventListener('webkitfullscreenchange', handler);
+      document.removeEventListener('mozfullscreenchange', handler);
+      document.removeEventListener('MSFullscreenChange', handler);
+    };
+  }, []);
+
+  // Fullscreen the CONTAINER (iframe + overlay together), not the iframe
+  // alone — so the click-blocking overlay stays on top in fullscreen too.
+  const toggleFullscreen = (e) => {
+    e.stopPropagation();
+    const el = containerRef.current;
+    if (!el) return;
+
+    const fsEl =
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullScreenElement ||
+      document.msFullscreenElement;
+
+    if (!fsEl) {
+      const req =
+        el.requestFullscreen ||
+        el.webkitRequestFullscreen ||
+        el.mozRequestFullScreen ||
+        el.msRequestFullscreen;
+      req?.call(el);
+    } else {
+      const exit =
+        document.exitFullscreen ||
+        document.webkitExitFullscreen ||
+        document.mozCancelFullScreen ||
+        document.msExitFullscreen;
+      exit?.call(document);
+    }
+  };
+
   // Overlay intercepts every click before it reaches the iframe, so
   // YouTube's logo/title/end-card links can never navigate the user
-  // away from the site. We replicate play/pause via postMessage.
+  // away from the site — in or out of fullscreen. Play/pause is
+  // replicated via postMessage.
   const handleOverlayClick = () => {
     const win = iframeRef?.current?.contentWindow;
     if (!win) return;
@@ -141,7 +196,15 @@ export default function VideoPlayer({ lesson, theme, iframeRef }) {
       </div>
 
       {/* ── Video frame ── */}
-      <div style={{ aspectRatio: '16/9', position: 'relative', background: '#000' }}>
+      <div
+        ref={containerRef}
+        style={{
+          aspectRatio: isFullscreen ? 'auto' : '16/9',
+          position: 'relative',
+          background: '#000',
+          ...(isFullscreen && { width: '100vw', height: '100vh' }),
+        }}
+      >
         {embedUrl && playerReady ? (
           <>
             <iframe
@@ -157,8 +220,9 @@ export default function VideoPlayer({ lesson, theme, iframeRef }) {
             />
 
             {/* Click-blocking overlay — YouTube only. Sits above the iframe
-                so no click ever reaches YouTube's own DOM/links, while still
-                letting users toggle play/pause through us. */}
+                and stays above it in fullscreen too, since we fullscreen
+                this whole container (not the iframe). No click can reach
+                YouTube's own DOM/links; we provide play/pause + fullscreen. */}
             {isYouTube && (
               <div
                 onClick={handleOverlayClick}
@@ -182,6 +246,29 @@ export default function VideoPlayer({ lesson, theme, iframeRef }) {
                     </svg>
                   </div>
                 )}
+
+                <button
+                  onClick={toggleFullscreen}
+                  aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                  style={{
+                    position: 'absolute', bottom: '12px', right: '12px',
+                    width: '34px', height: '34px', borderRadius: '8px',
+                    background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', padding: 0,
+                  }}
+                >
+                  {isFullscreen ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3" />
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3" />
+                    </svg>
+                  )}
+                </button>
               </div>
             )}
           </>
